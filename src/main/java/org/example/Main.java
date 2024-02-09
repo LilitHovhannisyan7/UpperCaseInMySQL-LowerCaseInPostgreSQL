@@ -18,8 +18,6 @@ public class Main {
     }
 
 
-//    I have any difficulties when I try to work with databases
-
     private static void saveMySQL(List<String> strings) throws SQLException {
         Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/database1", "username", "password");
 
@@ -122,5 +120,8 @@ public class Main {
     }
 
 }
+
+// Ընդհանուր գիտեմ ոնց կապել DB-ն Java-ի հետ, բայց վարժ չեմ, ու դա բերում է մի փոքր դժվարությունների
+// SQL-ի հետ աշխատելիս պարզ հրամանները հեշտությամբ ստացվում է, բայց կդժվարանամ ավելի բարդ հրամաններից
 
 
