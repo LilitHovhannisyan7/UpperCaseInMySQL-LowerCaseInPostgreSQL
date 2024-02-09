@@ -17,11 +17,40 @@ public class Main {
         }
     }
 
-//    I have any difficulties here
+    //    I have any difficulties here
     private static void saveMySQL(List<String> strings) throws SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/database1", "username", "password");
 
-        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/database_name", "username", "password");
-        String sql = "INSERT INTO uppercase_words (words) VALUES (?)";
+        String dropTableSQL = "DROP TABLE IF EXISTS uppercase";
+        Statement dropTableStatement = conn.createStatement();
+        dropTableStatement.execute(dropTableSQL);
+
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS uppercase (words VARCHAR(255))";
+        Statement createTableStatement = conn.createStatement();
+        createTableStatement.execute(createTableSQL);
+
+        String sql = "INSERT INTO uppercase (words) VALUES (?)";
+        PreparedStatement statement = conn.prepareStatement(sql);
+        for (String word : strings) {
+            statement.setString(1, word);
+            statement.executeUpdate();
+        }
+        conn.close();
+    }
+
+    private static void savePostgreSQL(List<String> strings) throws SQLException {
+        Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/database2", "postgres", "4652343L");
+
+        String dropTableSQL = "DROP TABLE IF EXISTS lowercase";
+        Statement dropTableStatement = conn.createStatement();
+        dropTableStatement.execute(dropTableSQL);
+
+
+        String createTableSQL = "CREATE TABLE IF NOT EXISTS lowercase (words VARCHAR(255))";
+        Statement createTableStatement = conn.createStatement();
+        createTableStatement.execute(createTableSQL);
+
+        String sql = "INSERT INTO lowercase (words) VALUES (?)";
         PreparedStatement statement = conn.prepareStatement(sql);
         for (String word : strings) {
             statement.setString(1, word);
@@ -31,16 +60,31 @@ public class Main {
     }
 
 
-    private static void savePostgreSQL(List<String> strings) throws SQLException {
 
-        Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/database_name", "username", "password");
-        String sql = "INSERT INTO lowercase_words (word) VALUES (?)";
-        PreparedStatement statement = conn.prepareStatement(sql);
-        for (String word : strings) {
-            statement.setString(1, word);
-            statement.executeUpdate();
+    private static List<String> readMySQL() throws SQLException {
+        List<String> words = new ArrayList<>();
+        Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/database1", "username", "password");
+        String sql = "SELECT words FROM uppercase";
+        Statement statement = conn.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        while (resultSet.next()) {
+            words.add(resultSet.getString("words"));
         }
         conn.close();
+        return words;
+    }
+
+    private static List<String> readPostgreSQL() throws SQLException {
+        List<String> words = new ArrayList<>();
+        Connection conn = DriverManager.getConnection("jdbc:postgresql://localhost:5432/database2", "postgres", "4652343L");
+        String sql = "SELECT words FROM lowercase";
+        Statement statement = conn.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        while (resultSet.next()) {
+            words.add(resultSet.getString("words"));
+        }
+        conn.close();
+        return words;
     }
 
     public static void main(String[] args) {
@@ -57,17 +101,24 @@ public class Main {
             saveMySQL(uppercase);
             savePostgreSQL(lowercase);
 
+            List<String> savedUppercaseWords = readMySQL();
+            List<String> savedLowercaseWords = readPostgreSQL();
 
-            System.out.println("Uppercase words");
-            for (String word : uppercase) {
+
+            System.out.println("Saved Uppercase words:");
+            for (String word : savedUppercaseWords) {
                 System.out.println(word);
             }
-            System.out.println("Lowercase words");
-            for (String word : lowercase) {
+            System.out.println("Saved Lowercase words:");
+            for (String word : savedLowercaseWords) {
                 System.out.println(word);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
     }
+
 }
+
+
