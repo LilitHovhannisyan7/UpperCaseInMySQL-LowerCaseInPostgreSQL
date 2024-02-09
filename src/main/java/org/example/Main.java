@@ -17,7 +17,7 @@ public class Main {
         }
     }
 
-//    I have any difficulties when I try work with databases
+//    I have any difficulties when I try to work with databases
     private static void saveMySQL(List<String> strings) throws SQLException {
 
         Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/database_name", "username", "password");
