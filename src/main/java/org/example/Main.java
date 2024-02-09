@@ -17,7 +17,11 @@ public class Main {
         }
     }
 
+<<<<<<< HEAD
     //    I have any difficulties here
+=======
+//    I have any difficulties when I try to work with databases
+>>>>>>> 30da5e8891133c0044ed883033a537363f838ebe
     private static void saveMySQL(List<String> strings) throws SQLException {
         Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/database1", "username", "password");
 
